@@ -10,7 +10,7 @@ This file is only here to enable the Github dependency graph.
   <modelVersion>4.0.0</modelVersion>
 
   <!-- The Basics -->
-  <groupId>com.schibsted.spt.data</groupId>
+  <groupId>io.github.anmol023</groupId>
   <artifactId>jslt</artifactId>
   <version>0.1.14</version>
 

@@ -26,7 +26,7 @@ ext {
     gitrev = "git log -1 HEAD --pretty=tformat:%h".execute().text.trim()
 }
 
-group 'com.schibsted.spt.data'
+group 'io.github.anmol023'
 version "0.1.14"
 project.description "A JSON query and transformation language"
 
@@ -101,31 +101,33 @@ publishing {
             pom {
                 name = 'JSLT'
                 description = project.description
-                url = 'https://github.com/schibsted/jslt'
+                url = 'https://github.com/Anmol023/jslt'
                 organization {
-                    name = 'Schibsted ASA'
-                    url = 'https://github.com/schibsted/'
+                    name = 'Anmol023'
+                    url = 'https://github.com/Anmol023/'
                 }
                 issueManagement {
                     system = 'GitHub'
-                    url = 'https://github.com/schibsted/jslt/issues'
+                    url = 'https://github.com/Anmol023/jslt/issues'
                 }
                 licenses {
                     license {
                         name = 'Apache License 2.0'
-                        url = 'https://github.com/schibsted/jslt/blob/master/LICENSE'
+                        url = 'https://github.com/Anmol023/jslt/blob/master/LICENSE'
                         distribution = 'repo'
                     }
                 }
                 developers {
                     developer {
-                        name = 'Schibsted'
+                        id = 'Anmol023'
+                        name = 'Anmol023'
+                        url = 'https://github.com/Anmol023'
                     }
                 }
                 scm {
-                    url = 'https://github.com/schibsted/jslt'
-                    connection = 'scm:git:git://github.com/schibsted/jslt.git'
-                    developerConnection = 'scm:git:ssh://git@github.com:schibsted/jslt.git'
+                    url = 'https://github.com/Anmol023/jslt'
+                    connection = 'scm:git:git://github.com/Anmol023/jslt.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:Anmol023/jslt.git'
                 }
             }
 
@@ -141,7 +143,9 @@ publishing {
     }
     repositories {
         maven {
-            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
                 // these are stored in a secret gradle.properties that is not
                 // in the repo, so we need a fallback
@@ -154,6 +158,11 @@ publishing {
 
 signing {
     required { gradle.taskGraph.hasTask("publish") }
+    def signingKey = findProperty('signingKey')
+    def signingPassword = findProperty('signingPassword')
+    if (signingKey && signingPassword) {
+        useInMemoryPgpKeys(signingKey, signingPassword)
+    }
     sign publishing.publications.mavenJava
 }
 
