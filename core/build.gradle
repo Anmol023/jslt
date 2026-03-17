@@ -142,15 +142,24 @@ publishing {
         }
     }
     repositories {
+        // GitHub Packages — uses the built-in GITHUB_TOKEN, no extra secrets needed
         maven {
-            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2"
-            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/Anmol023/jslt"
             credentials {
-                // these are stored in a secret gradle.properties that is not
-                // in the repo, so we need a fallback
-                username((project.hasProperty('sonatypeUsername')) ? sonatypeUsername : "no username")
-                password((project.hasProperty('sonatypePassword')) ? sonatypePassword : "no password")
+                username = findProperty('gpr.user') ?: System.getenv('GITHUB_ACTOR')
+                password = findProperty('gpr.key')  ?: System.getenv('GITHUB_TOKEN')
+            }
+        }
+        // Sonatype Maven Central — used when sonatypeUsername/Password secrets are configured
+        maven {
+            name = "SonatypeMavenCentral"
+            url = version.endsWith('SNAPSHOT')
+                ? "https://s01.oss.sonatype.org/content/repositories/snapshots"
+                : "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username = findProperty('sonatypeUsername') ?: "no username"
+                password = findProperty('sonatypePassword') ?: "no password"
             }
         }
     }
